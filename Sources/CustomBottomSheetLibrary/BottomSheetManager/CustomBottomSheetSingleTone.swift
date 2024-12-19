@@ -27,12 +27,12 @@ public class CustomBottomSheetSingleTone {
         }
     }
     
-    public func findBottomSheetOption(pk: UUID?) -> CustomUIKitBottomSheetOption? {
+    public func findBottomSheet(pk: UUID?) -> CustomUIKitBottomSheet? {
         guard let sheetPk = pk else { return nil }
         
         for (index, (bottomSheetViewController, bottomSheetUUID, viewPk)) in self.bottomSheetList.enumerated().reversed() {
             if bottomSheetUUID == sheetPk {
-                return bottomSheetViewController.customUIKitBottomSheetOption
+                return bottomSheetViewController
             }
         }
         
