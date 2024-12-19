@@ -45,4 +45,10 @@ public struct CustomUIKitBottomSheetOption: Sendable {
     public var onEndTouchScrolling: ((Double, Bool) -> Void)? = { _,_ in }
     
     public var onDismiss: (() -> Void)? = {}
+    
+    
+    public init(pk: UUID, someView: AnyView) {
+        self.pk = pk
+        self.someView = someView
+    }
 }
