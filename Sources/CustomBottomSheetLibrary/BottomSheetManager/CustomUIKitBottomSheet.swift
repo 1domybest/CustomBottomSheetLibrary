@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import KeyboardManager
 
-class CustomUIKitBottomSheet: UIViewController {
+public class CustomUIKitBottomSheet: UIViewController {
     
     public var customUIKitBottomSheetOption: CustomUIKitBottomSheetOption?
     var customModalPresentationController: CustomModalPresentationController?
@@ -82,7 +82,7 @@ class CustomUIKitBottomSheet: UIViewController {
         }
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setView()
@@ -279,7 +279,7 @@ class CustomUIKitBottomSheet: UIViewController {
 }
 
 extension CustomUIKitBottomSheet:UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         self.customModalPresentationController = CustomModalPresentationController(presentedViewController: presented, presenting: presenting, bottomSheetModel: self.customUIKitBottomSheetOption)
         return self.customModalPresentationController
     }
@@ -287,7 +287,7 @@ extension CustomUIKitBottomSheet:UIViewControllerTransitioningDelegate {
 
 
 extension CustomUIKitBottomSheet:@preconcurrency KeyboardManangerProtocol {
-    func keyBoardWillShow(notification: NSNotification, keyboardHeight: CGFloat) {
+    public func keyBoardWillShow(notification: NSNotification, keyboardHeight: CGFloat) {
         DispatchQueue.main.async {
             self.isKeyboardOpen = true
             self.lastSizeOfScrollViewContentHeight = self.currentSizeOfScrollViewContentHeight
@@ -299,7 +299,7 @@ extension CustomUIKitBottomSheet:@preconcurrency KeyboardManangerProtocol {
         
     }
     
-    func keyBoardWillHide(notification: NSNotification) {
+    public func keyBoardWillHide(notification: NSNotification) {
         DispatchQueue.main.async {
             self.keyboardHeight = 0
             self.customModalPresentationController?.setKeyboardHeight(keyboardHeight: self.keyboardHeight)
@@ -314,7 +314,7 @@ extension CustomUIKitBottomSheet:@preconcurrency KeyboardManangerProtocol {
 
 class CustomScrollView: UIScrollView {
     // 스크롤뷰가 스크롤이 비활성화된 상태에서 터치 이벤트를 하위 뷰로 전달하도록 설정
-    override func touchesShouldCancel(in view: UIView) -> Bool {
+    override  func touchesShouldCancel(in view: UIView) -> Bool {
         return true
     }
     
@@ -403,7 +403,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     }
     
     // 스크롤링 애니매이션이 끝났을때
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.isScrolling = false
         if self.isTop {
             if self.scrollView?.bounces ?? false {
@@ -415,7 +415,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     }
 
     // 사용자가 손을 땠을때
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
         let offset = scrollView.contentOffset.y
         self.customUIKitBottomSheetOption?.onEndTouchScrolling?(offset, decelerate)
@@ -431,7 +431,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     }
     
     // UIScrollViewDelegate method
-     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
          let offset = scrollView.contentOffset.y
          let contentHeight = scrollView.contentSize.height
          let scrollViewHeight = scrollView.frame.size.height
@@ -469,11 +469,11 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
          }
      }
 
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.isScrolling = true
     }
     
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+    public func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         return false
     }
     
