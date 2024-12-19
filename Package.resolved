@@ -1,0 +1,15 @@
+{
+  "originHash" : "75e28aeb37d37f29fb7eb15c547f0a5849ecce7734ce2743206e247b58747b1c",
+  "pins" : [
+    {
+      "identity" : "keyboardmanagerlibrary",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/1domybest/KeyboardManagerLibrary.git",
+      "state" : {
+        "revision" : "8f994aad4faae2e9493836097f731dc1333d2cdf",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
