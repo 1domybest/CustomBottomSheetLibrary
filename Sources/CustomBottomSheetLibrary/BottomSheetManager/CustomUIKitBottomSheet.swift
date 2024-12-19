@@ -487,7 +487,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     /// - Parameters:
     /// - Returns:
     ///
-    func scrollTo(offset: CGFloat, animation: Bool) {
+    public func scrollTo(offset: CGFloat, animation: Bool) {
         DispatchQueue.main.async {
             self.scrollView?.setContentOffset(CGPoint(x: 0, y: offset), animated: animation)
         }
@@ -499,7 +499,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     /// - Parameters:
     /// - Returns:
     ///
-    func scrollToBottom(animated: Bool = true) {
+    public func scrollToBottom(animated: Bool = true) {
         DispatchQueue.main.async {
             let offset = self.scrollView?.contentOffset.y ?? .zero
             let contentSize = self.scrollView?.contentSize.height ?? .zero
@@ -519,7 +519,7 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
     /// - Parameters:
     /// - Returns:
     ///
-    func scrollToTop(animated: Bool = true) {
+    public func scrollToTop(animated: Bool = true) {
         
         DispatchQueue.main.async {
             self.scrollView?.setContentOffset(CGPoint(x: 0, y: -(self.scrollView?.contentInset.top ?? .zero)), animated: animated)
