@@ -25,10 +25,12 @@ class CustomModalPresentationController: UIPresentationController {
         print("CustomModalPresentationController deinit")
     }
     
+    /// 참조 제거시 사용
     func unreference () {
         self.bottomSheetModel = nil;
     }
     
+    /// 키보드 높이 설정
     func setKeyboardHeight(keyboardHeight: CGFloat) {
         self.keyboardHeight = keyboardHeight
     }
@@ -68,8 +70,8 @@ class CustomModalPresentationController: UIPresentationController {
         }, completion: nil)
     }
 
+    /// 시트 뒷배경 터치시  -> 싱글톤에 서 hide호출하여 현재 시트 닫기 실행
     @objc func dimmingViewTapped() {
-        // 탭 이벤트가 발생했을 때 수행할 동작 (예: 바텀 시트 닫기)
         CustomBottomSheetSingleTone.shared.hide(pk: self.bottomSheetModel?.pk)
     }
 
@@ -84,13 +86,11 @@ class CustomModalPresentationController: UIPresentationController {
         })
     }
     
-    
+    /// 현재 sheet높이 지정
     func setSheetHeight(sheetHeight: CGFloat) {
-         // Update the height in the model
         DispatchQueue.main.async {
             self.bottomSheetModel?.sheetHeight = sheetHeight
             
-            // Notify that the layout should be updated
             if let containerView = self.containerView {
                 UIView.animate(withDuration: 0.3) {
                     self.presentedView?.frame = self.frameOfPresentedViewInContainerView

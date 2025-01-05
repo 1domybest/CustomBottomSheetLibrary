@@ -10,32 +10,58 @@ import SwiftUI
 import KeyboardManager
 
 public class CustomUIKitBottomSheet: UIViewController {
-    
+    /// 사용될 바텀시트 옵션
     public var customUIKitBottomSheetOption: CustomUIKitBottomSheetOption?
+    
+    /// 시트 딜리게이트
     var customModalPresentationController: CustomModalPresentationController?
     
-    private var keyboardHeightConstraint: NSLayoutConstraint?
-    
+    /// 터치되는 Point 초기화시 사용
     private var initialTouchPoint: CGPoint?
     
-    
+    /// 손잡이 View
     var handlerView: UIView?
+    
+    /// safeArea top padding 사이즈
     var topSafeAreaSize: CGFloat = .zero
+    
+    /// 스크롤뷰 [시트가 화면을 넘어갔을때 주로 사용]
     var scrollView: UIScrollView?
+    
+    /// SwiftUI View -> UiKit에서 사용할수있도록 호스팅뷰를 사용
     var hostingController: UIHostingController<AnyView>?
     
+    /// SwiftUI에서 받아온 AnyView(View()) 에 키보드가 존재할시 사용하는 키보드 매니저
     var keyboardManager: KeyboardManager?
+    
+    /// 키보드 높이 저장 변수
     var keyboardHeight: CGFloat = .zero
+    
+    /// 키보드 노출 유무
     var isKeyboardOpen: Bool = false
+    
+    /// 마지막 ScrollView 내부 콘텐트 높이 사이즈
     var lastSizeOfScrollViewContentHeight: CGFloat = .zero
+    
+    /// 현재 ScrollView 내부 콘텐트 높이 사이즈
     var currentSizeOfScrollViewContentHeight: CGFloat = .zero
     
+    /// 드레그 제스처
     var dragGesture: UIPanGestureRecognizer?
     
+    /// 스크롤링중인지 여부
     var isScrolling: Bool = false
+    
+    /// 스크롤 위치 변수 [현재 가장 최상단 인지]
     var isTop: Bool = true
+    
+    /// 스크롤 위치 변수 [현재 가장 최하단 인지]
     var isBottom: Bool = false
+    
+    /// 드레깅 종료상태 변수
     var isFinishedDragging: Bool = false
+    
+    /// 내부 시트가 화면을 넘었는지에대한 상태 변수
     var isOverScreen: Bool = false
     
     init(bottomSheetModel: CustomUIKitBottomSheetOption) {
@@ -63,6 +89,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         print("CustomUIKitBottomSheet deinit")
     }
     
+    /// 참조 해제 변수
     func unreference () {
         self.customUIKitBottomSheetOption = nil
         self.customModalPresentationController = nil
@@ -97,6 +124,7 @@ public class CustomUIKitBottomSheet: UIViewController {
          }
     }
     
+    /// View 초기화 함수
     func setView () {
         if self.customUIKitBottomSheetOption?.sheetMode == .custom {
             setSheetView()
@@ -105,20 +133,19 @@ public class CustomUIKitBottomSheet: UIViewController {
             setHostingView()
         }
         
-//        setHostingView()
-        
-        
         if self.customUIKitBottomSheetOption?.showHandler ?? false || self.customUIKitBottomSheetOption?.availableHasHandle ?? false {
             setHandlerView()
         }
     }
     
+    /// 제스처 등록 함수
     func addGestureRecognizers() {
          let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
          view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
      }
     
+    /// 스크롤뷰 등록 함수
     func setupScrollView() {
         let scrollView = CustomScrollView()
         scrollView.backgroundColor = self.customUIKitBottomSheetOption?.sheetColor.getUIColor()
@@ -160,6 +187,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         self.scrollView = scrollView
     }
     
+    /// SwifrtUI View 등록함수
     func setHostingView () {
         // SwiftUI View를 AnyView로 감싸서 사용
         let swiftUIView = self.customUIKitBottomSheetOption?.someView
@@ -191,6 +219,7 @@ public class CustomUIKitBottomSheet: UIViewController {
 
     }
     
+    /// 시트 View 등록함수
     func setSheetView () {
         if self.customUIKitBottomSheetOption?.sheetHeight == UIScreen.main.bounds.height { return }
         view.backgroundColor = self.customUIKitBottomSheetOption?.sheetColor.getUIColor()
@@ -204,6 +233,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         self.view.layer.mask = maskLayer
     }
     
+    /// 시트 손잡이 View 등록 함수
     func setHandlerView() {
         let handlerView = UIView()
         handlerView.backgroundColor = self.customUIKitBottomSheetOption?.handlerColor.getUIColor()
@@ -227,6 +257,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         self.handlerView = handlerView
     }
     
+    /// 시트 내리기 함수
     func dismissPresent () {
         self.dismiss(animated: true, completion: {
             self.customUIKitBottomSheetOption?.onDismiss?()
@@ -234,6 +265,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         })
     }
     
+    /// 시트 내리기 함수 [콜백 포함]
     func dismissPresent (animated: Bool = true, completion: @escaping () -> Void) {
         self.dismiss(animated: animated, completion: {
             self.customUIKitBottomSheetOption?.onDismiss?()
@@ -242,7 +274,7 @@ public class CustomUIKitBottomSheet: UIViewController {
         })
     }
 
-    
+    /// 시트 높이 업데이트 함수
     func updateSheetHeight(newHeight: CGFloat) {
         self.currentSizeOfScrollViewContentHeight = newHeight
         var newHeight = newHeight
@@ -285,7 +317,7 @@ extension CustomUIKitBottomSheet:UIViewControllerTransitioningDelegate {
     }
 }
 
-
+/// 키보드 매니저 딜리게이트
 extension CustomUIKitBottomSheet:@preconcurrency KeyboardManangerProtocol {
     public func keyBoardWillShow(notification: NSNotification, keyboardHeight: CGFloat) {
         DispatchQueue.main.async {
@@ -312,6 +344,7 @@ extension CustomUIKitBottomSheet:@preconcurrency KeyboardManangerProtocol {
     }
 }
 
+/// UIScrollView
 class CustomScrollView: UIScrollView {
     // 스크롤뷰가 스크롤이 비활성화된 상태에서 터치 이벤트를 하위 뷰로 전달하도록 설정
     override  func touchesShouldCancel(in view: UIView) -> Bool {
@@ -328,8 +361,9 @@ class CustomScrollView: UIScrollView {
 }
 
 
+/// 스크롤뷰 딜리게이트
 extension CustomUIKitBottomSheet: UIScrollViewDelegate {
-    
+    /// 핸들 제스처 콜백함수
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         guard let containerView = self.view else { return }
 
@@ -469,10 +503,12 @@ extension CustomUIKitBottomSheet: UIScrollViewDelegate {
          }
      }
 
+    /// 드레깅 시작시
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.isScrolling = true
     }
     
+    /// 상단 클릭시 자동으로 상단으로 스크롤 할지에대한 함수
     public func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         return false
     }
