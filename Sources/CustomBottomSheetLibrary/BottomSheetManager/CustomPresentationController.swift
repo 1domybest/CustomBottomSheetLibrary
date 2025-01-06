@@ -7,15 +7,29 @@
 
 import Foundation
 import UIKit
+import KeyboardManager
 
-// Custom PresentationController 정의
+/**
+    ``UIPresentationController``
+ 
+    UIKit 의 기본 [`UIPresentationController`](https://developer.apple.com/documentation/uikit/uipresentationcontroller) 를 사용하여
+    뒷배경 터치와 바텀시트가 present 되었을때 이벤트를 호출받아 공유
+ */
 class CustomModalPresentationController: UIPresentationController {
     
-    // 추가적인 파라미터
+    /**
+     바텀시트의 옵션을 담은 객체 ``CustomUIKitBottomSheetOption``
+     */
     var bottomSheetModel: CustomUIKitBottomSheetOption?
-    var keyboardHeight: CGFloat = .zero
     
-    // 초기화 메서드
+    /**
+     키보드의 높이
+     */
+    var keyboardHeight: CGFloat = .zero
+
+    /**
+     초기화 메서드
+     */
     init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, bottomSheetModel: CustomUIKitBottomSheetOption?) {
         self.bottomSheetModel = bottomSheetModel
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
@@ -25,17 +39,27 @@ class CustomModalPresentationController: UIPresentationController {
         print("CustomModalPresentationController deinit")
     }
     
-    /// 참조 제거시 사용
+    /**
+     참조 해제해주는 함수 [메모리 관리]
+     */
     func unreference () {
         self.bottomSheetModel = nil;
     }
     
-    /// 키보드 높이 설정
+    /**
+     키보드 높이 업데이트 해주는 함수
+     
+     단 ``CustomUIKitBottomSheetOption/hasKeyboard`` 가 ``True`` 일시에 적용된다.
+     */
     func setKeyboardHeight(keyboardHeight: CGFloat) {
         self.keyboardHeight = keyboardHeight
     }
     
-    // 바텀 시트 스타일을 위한 높이 설정
+    /**
+     sheet의 애니메이션이 종료되는 시점에 호출되는 변수
+     
+     이때 최종높이를 계산해서 업데이트 해준다.
+     */
     override var frameOfPresentedViewInContainerView: CGRect {
         guard let containerView = containerView else { return .zero }
         let height: CGFloat = self.bottomSheetModel?.sheetHeight ?? .zero
@@ -47,7 +71,12 @@ class CustomModalPresentationController: UIPresentationController {
         )
     }
     
-    // 배경을 어둡게 만드는 처리
+    /**
+     sheet가 present 될때 받는 이벤트
+     
+     이때 뒷배경 색이 ``CustomUIKitBottomSheetOption/backgroundColor`` 에 포함되어있다면
+     뒷배경색 추가
+     */
     override func presentationTransitionWillBegin() {
         guard let containerView = containerView else { return }
         if self.bottomSheetModel?.backgroundColor == .clear { return }
@@ -75,7 +104,11 @@ class CustomModalPresentationController: UIPresentationController {
         CustomBottomSheetSingleTone.shared.hide(pk: self.bottomSheetModel?.pk)
     }
 
-    
+    /**
+     sheet가 dissmiss가 시작될때 이벤트를 호출받음
+        
+     dissmiss가 될때 뒷배경의 알파를 0으로 만들어 사라지게해주고 애니메이션을 추가해줌
+     */
     override func dismissalTransitionWillBegin() {
         guard let dimmingView = containerView?.subviews.first else { return }
         
@@ -86,7 +119,12 @@ class CustomModalPresentationController: UIPresentationController {
         })
     }
     
-    /// 현재 sheet높이 지정
+    /**
+     현재 sheet 높이를 update해주는 함수
+     
+     - Parameters:
+       - sheetHeight: CGFloat
+     */
     func setSheetHeight(sheetHeight: CGFloat) {
         DispatchQueue.main.async {
             self.bottomSheetModel?.sheetHeight = sheetHeight
